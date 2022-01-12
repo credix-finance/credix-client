@@ -1,0 +1,24 @@
+{
+	"extends": [
+		"react-app",
+		"eslint:recommended",
+		"react-app/jest",
+		"prettier"
+	],
+	"plugins": [
+		"react-hooks",
+		"formatjs"
+	],
+	"rules": {
+		"semi": ["error", "always"],
+		"react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+		"no-trailing-spaces": "warn",
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"eol-last": "warn",
+		"comma-spacing": "warn",
+		"quotes": "error",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": "error"
+	}
+}

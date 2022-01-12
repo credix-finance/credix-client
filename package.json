@@ -1,0 +1,31 @@
+{
+	"name": "credix-client",
+	"version": "0.1.0",
+	"description": "Client to interact with Credix marketplaces on Solana",
+	"author": {
+		"name": "Credix Finance BV",
+		"email": "admin@credix.finance",
+		"url": "https://credix.finance"
+	},
+	"license": "MIT",
+	"private": false,
+	"scripts": {
+
+	},
+	"devDependencies": {
+		"typedoc": "^0.22.10"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all",
+			"maintained node versions"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}
