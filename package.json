@@ -16,7 +16,8 @@
 	"license": "MIT",
 	"private": false,
 	"scripts": {
-		"build": "tsc"
+		"build": "tsc",
+		"lint": "yarn eslint src/"
 	},
 	"browserslist": {
 		"production": [
