@@ -17,7 +17,9 @@
 	"private": false,
 	"scripts": {
 		"build": "tsc",
-		"lint": "yarn eslint src/"
+		"lint": "yarn eslint src/",
+		"format": "yarn prettier --check src/",
+		"clean": "rm -rf build/"
 	},
 	"browserslist": {
 		"production": [
