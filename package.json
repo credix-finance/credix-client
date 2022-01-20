@@ -1,5 +1,5 @@
 {
-	"name": "credix-client",
+	"name": "@credix/credix-client",
 	"version": "0.1.0",
 	"description": "Client to interact with Credix marketplaces on Solana",
 	"author": {
@@ -7,13 +7,19 @@
 		"email": "admin@credix.finance",
 		"url": "https://credix.finance"
 	},
+	"repository": "https://github.com/credix-finance/credix-client",
+	"bugs": {
+		"url": "https://github.com/credix-finance/credix-client/issues",
+		"email": "admin@credix.finance"
+	},
+	"homepage": "https://credix.finance",
 	"license": "MIT",
 	"private": false,
 	"scripts": {
-
-	},
-	"devDependencies": {
-		"typedoc": "^0.22.10"
+		"build": "tsc",
+		"lint": "yarn eslint src/",
+		"format": "yarn prettier --check src/",
+		"clean": "rm -rf build/"
 	},
 	"browserslist": {
 		"production": [
@@ -27,5 +33,27 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
+	},
+	"dependencies": {
+		"@project-serum/anchor": "^0.20.1",
+		"@saberhq/anchor-contrib": "^1.12.32",
+		"@solana/web3.js": "^1.31.0",
+		"big.js": "^6.1.1"
+	},
+	"devDependencies": {
+		"@types/big.js": "^6.1.2",
+		"@types/react": "^17.0.38",
+		"@typescript-eslint/eslint-plugin": "^5.10.0",
+		"@typescript-eslint/parser": "^5.10.0",
+		"eslint": "^8.7.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-react": "^7.28.0",
+		"prettier": "2.5.1",
+		"react": "^17.0.2",
+		"typedoc": "^0.22.10",
+		"typescript": "^4.5.4"
+	},
+	"peerDependencies": {
+		"react": "^17.0.2"
 	}
 }
