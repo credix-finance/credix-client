@@ -392,6 +392,11 @@ export type Credix = {
           "isSigner": false
         },
         {
+          "name": "lpTokenMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
@@ -515,12 +520,12 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "systemProgram",
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "rent",
+          "name": "systemProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -818,6 +823,228 @@ export type Credix = {
       }
     }
   ],
+  "events": [
+    {
+      "name": "DealCreationEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DealActivationEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "totalOutstandingCredit",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DealInterestRepaymentEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "treasuryAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpTokenPrice",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DealPrincipalRepaymentEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "totalOutstandingCredit",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "investor",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "investorLpTokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "treasuryAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DepositEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "investor",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "investorLpTokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 6000,
@@ -913,6 +1140,51 @@ export type Credix = {
       "code": 6018,
       "name": "InterestBeforePrincipal",
       "msg": "Repay interest before principal."
+    },
+    {
+      "code": 6019,
+      "name": "MarketIsFrozen",
+      "msg": "This market is currently frozen. Please try again later."
+    },
+    {
+      "code": 6020,
+      "name": "InvalidBorrowerTokenAccount",
+      "msg": "Invalid Borrower Token Account."
+    },
+    {
+      "code": 6021,
+      "name": "InvalidBorrowerAccount",
+      "msg": "Invalid Borrower Account."
+    },
+    {
+      "code": 6022,
+      "name": "InvalidGatewayToken",
+      "msg": "Invalid Gateway token."
+    },
+    {
+      "code": 6023,
+      "name": "DealAlreadyActive",
+      "msg": "Deal is already active."
+    },
+    {
+      "code": 6024,
+      "name": "InvalidInvestorTokenAccount",
+      "msg": "Invalid Investor Token Account."
+    },
+    {
+      "code": 6025,
+      "name": "InvalidTokenAccountMint",
+      "msg": "Invalid mint for Token Account."
+    },
+    {
+      "code": 6026,
+      "name": "InvalidMintAccount",
+      "msg": "Invalid mint Account."
+    },
+    {
+      "code": 6027,
+      "name": "InvalidTreasuryAccount",
+      "msg": "Invalid treasury Account for this market."
     }
   ]
 };
@@ -1311,6 +1583,11 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
+          "name": "lpTokenMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
@@ -1434,12 +1711,12 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "systemProgram",
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "rent",
+          "name": "systemProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -1737,6 +2014,228 @@ export const IDL: Credix = {
       }
     }
   ],
+  "events": [
+    {
+      "name": "DealCreationEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DealActivationEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "totalOutstandingCredit",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DealInterestRepaymentEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "treasuryAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpTokenPrice",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DealPrincipalRepaymentEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "borrower",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "totalOutstandingCredit",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "investor",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "investorLpTokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "treasuryAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DepositEvent",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": true
+        },
+        {
+          "name": "investor",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "liquidityPoolAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "investorLpTokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "globalMarketState",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 6000,
@@ -1832,6 +2331,51 @@ export const IDL: Credix = {
       "code": 6018,
       "name": "InterestBeforePrincipal",
       "msg": "Repay interest before principal."
+    },
+    {
+      "code": 6019,
+      "name": "MarketIsFrozen",
+      "msg": "This market is currently frozen. Please try again later."
+    },
+    {
+      "code": 6020,
+      "name": "InvalidBorrowerTokenAccount",
+      "msg": "Invalid Borrower Token Account."
+    },
+    {
+      "code": 6021,
+      "name": "InvalidBorrowerAccount",
+      "msg": "Invalid Borrower Account."
+    },
+    {
+      "code": 6022,
+      "name": "InvalidGatewayToken",
+      "msg": "Invalid Gateway token."
+    },
+    {
+      "code": 6023,
+      "name": "DealAlreadyActive",
+      "msg": "Deal is already active."
+    },
+    {
+      "code": 6024,
+      "name": "InvalidInvestorTokenAccount",
+      "msg": "Invalid Investor Token Account."
+    },
+    {
+      "code": 6025,
+      "name": "InvalidTokenAccountMint",
+      "msg": "Invalid mint for Token Account."
+    },
+    {
+      "code": 6026,
+      "name": "InvalidMintAccount",
+      "msg": "Invalid mint Account."
+    },
+    {
+      "code": 6027,
+      "name": "InvalidTreasuryAccount",
+      "msg": "Invalid treasury Account for this market."
     }
   ]
 };

@@ -23,3 +23,10 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea/
+
+.env
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/cache/
+
+.nyc_output/

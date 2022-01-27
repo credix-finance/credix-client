@@ -4,6 +4,14 @@ Repository containing the client code to interact with Credix marketplaces.
 
 # Development
 
+## Environment variables
+
+You can put variables in `.env`. They will be loaded.
+
+### Required
+
+`ANCHOR_WALLET` must be set and point to a valid keypair.
+
 ## Editors
 
 We use eslint and prettier to lint and format our codebase. An editorconfig file is also provided.
