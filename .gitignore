@@ -25,8 +25,12 @@ yarn-error.log*
 .idea/
 
 .env
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/cache/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 .nyc_output/
