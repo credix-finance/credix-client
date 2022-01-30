@@ -1,3 +1,4 @@
+import { findGatewayToken } from "@identity.com/solana-gateway-ts";
 import { Provider, Wallet } from "@project-serum/anchor";
 import { makeSaberProvider, newProgram } from "@saberhq/anchor-contrib";
 import { ConfirmOptions, Connection, PublicKey } from "@solana/web3.js";
@@ -31,6 +32,22 @@ export class CredixClient {
 			return globalMarketState;
 		}
 
-		return new Market(globalMarketState, marketName, this.program, address);
+		return new Market(globalMarketState, marketName, this.program, address, this);
+	}
+
+	// TODO: use this where necessary
+	async getClusterTime(useFallback?: boolean) {
+		const slot = await this.program.provider.connection.getSlot();
+		const clusterTime = await this.program.provider.connection.getBlockTime(slot);
+
+		if (!clusterTime && useFallback) {
+			return Date.now() * 1000;
+		}
+
+		return clusterTime;
+	}
+
+	getGatewayToken(user: PublicKey, gatekeeperNetwork: PublicKey) {
+		return findGatewayToken(this.program.provider.connection, user, gatekeeperNetwork);
 	}
 }

@@ -1,11 +1,14 @@
 import { BN } from "@project-serum/anchor";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import { Big } from "big.js";
-import { Deal as ProgramDeal } from "idl/idl.types";
+import { CredixProgram, Deal as ProgramDeal, RepaymentType } from "idl/idl.types";
 import { SECONDS_IN_DAY, ZERO } from "utils/math.utils";
 import { Market } from "./Market";
 import { encodeSeedString } from "utils/pda.utils";
 import { Ratio } from "./Ratio";
+import { CredixClient } from "index";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { CredixPass } from "./CredixPass";
 
 export enum DealStatus {
 	CLOSED,
@@ -17,11 +20,21 @@ export class Deal {
 	address: PublicKey;
 	market: Market;
 	private programVersion: ProgramDeal;
+	private program: CredixProgram;
+	private client: CredixClient;
 
-	constructor(deal: ProgramDeal, market: Market, address: PublicKey) {
+	constructor(
+		deal: ProgramDeal,
+		market: Market,
+		address: PublicKey,
+		program: CredixProgram,
+		client: CredixClient
+	) {
 		this.programVersion = deal;
 		this.market = market;
 		this.address = address;
+		this.program = program;
+		this.client = client;
 	}
 
 	static generatePDA(borrower: PublicKey, dealNumber: number, market: Market) {
@@ -128,6 +141,18 @@ export class Deal {
 		return DealStatus.IN_PROGRESS;
 	}
 
+	isPending() {
+		return this.status === DealStatus.PENDING;
+	}
+
+	isClosed() {
+		return this.status === DealStatus.CLOSED;
+	}
+
+	isInProgress() {
+		return this.status === DealStatus.IN_PROGRESS;
+	}
+
 	get daysRemaining() {
 		if (!this.goLiveAt || this.status === DealStatus.PENDING) {
 			return this.timeToMaturity;
@@ -145,5 +170,83 @@ export class Deal {
 
 	get borrower() {
 		return this.programVersion.borrower;
+	}
+
+	async activate() {
+		const gatewayToken = await this.client.getGatewayToken(
+			this.borrower,
+			this.market.gateKeeperNetwork
+		);
+		const [signingAuthorityAddress] = await this.market.generateSigningAuthorityPDA();
+		const liquidityPoolTokenAccount = await this.market.findLiquidityPoolTokenAccount();
+		const borrowerTokenAccount = await this.market.findBaseTokenAccount(this.borrower);
+		const [credixPassAddress] = await CredixPass.generatePDA(this.borrower, this.market);
+
+		if (!gatewayToken) {
+			// TODO: centralize these errors
+			throw new Error("No valid Civic gateway gateway token found");
+		}
+
+		return this.program.rpc.activateDeal({
+			accounts: {
+				owner: this.program.provider.wallet.publicKey,
+				gatewayToken: gatewayToken.publicKey,
+				globalMarketState: this.market.address,
+				signingAuthority: signingAuthorityAddress,
+				deal: this.address,
+				liquidityPoolTokenAccount: liquidityPoolTokenAccount,
+				borrower: this.borrower,
+				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+				borrowerTokenAccount: borrowerTokenAccount,
+				credixPass: credixPassAddress,
+				baseMintAccount: this.market.baseMintPK,
+				tokenProgram: TOKEN_PROGRAM_ID,
+				systemProgram: SystemProgram.programId,
+				rent: SYSVAR_RENT_PUBKEY,
+			},
+		});
+	}
+
+	async repayPrincipal(amount: Big) {
+		return this.repay(amount, { interest: {} });
+	}
+
+	async repayInterest(amount: Big) {
+		return this.repay(amount, { principal: {} });
+	}
+
+	private async repay(amount: Big, repaymentType: RepaymentType) {
+		const repayAmount = new BN(amount.toNumber());
+		const gatewayToken = await this.client.getGatewayToken(
+			this.borrower,
+			this.market.gateKeeperNetwork
+		);
+		const borrowerTokenAccount = await this.market.findBaseTokenAccount(this.borrower);
+		const liquidityPoolTokenAccount = await this.market.findLiquidityPoolTokenAccount();
+		const [signingAuthorityAddress] = await this.market.generateSigningAuthorityPDA();
+		const [credixPassAddress] = await CredixPass.generatePDA(this.borrower, this.market);
+
+		if (!gatewayToken) {
+			// TODO: centralize these errors
+			throw new Error("No valid Civic gateway gateway token found");
+		}
+
+		return this.program.rpc.makeDealRepayment(repayAmount, repaymentType, {
+			accounts: {
+				borrower: this.borrower,
+				gatewayToken: gatewayToken.publicKey,
+				globalMarketState: this.market.address,
+				borrowerTokenAccount: borrowerTokenAccount,
+				deal: this.address,
+				liquidityPoolTokenAccount: liquidityPoolTokenAccount,
+				treasuryPoolTokenAccount: this.market.treasury,
+				signingAuthority: signingAuthorityAddress,
+				baseMintAccount: this.market.baseMintPK,
+				lpTokenMintAccount: this.market.lpMintPK,
+				credixPass: credixPassAddress,
+				tokenProgram: TOKEN_PROGRAM_ID,
+				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+			},
+		});
 	}
 }
