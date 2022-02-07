@@ -1,7 +1,5 @@
-import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
 import { chaiSolana } from "@saberhq/chai-solana";
 import { Market } from "accounts/Market";
-import { Big } from "big.js";
 import { expect, use } from "chai";
 import Sinon from "sinon";
 import { programMarketFixture } from "./fixtures/Market.fixture";

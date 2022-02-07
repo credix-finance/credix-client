@@ -13,13 +13,25 @@ import Fraction from "fraction.js";
 import { CredixClient } from "index";
 import { ZERO } from "utils/math.utils";
 
+/**
+ * Represents a Credix market. Main entrypoint for market interactions
+ */
 export class Market {
+	/**
+	 * Name of the market
+	 */
 	name: string;
+	/**
+	 * Address of the market
+	 */
 	address: PublicKey;
 	private program: CredixProgram;
 	private programVersion: GlobalMarketState;
 	private client: CredixClient;
 
+	/**
+	 * @ignore
+	 */
 	constructor(
 		market: GlobalMarketState,
 		name: string,
@@ -34,6 +46,12 @@ export class Market {
 		this.client = client;
 	}
 
+	/**
+	 * Deposit into the market's liquidity pool
+	 * @param amount Amount to deposit
+	 * @param investor Public key to deposit for. Should be the public key of the wallet of the client.
+	 * @returns
+	 */
 	async deposit(amount: Big, investor: PublicKey) {
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
 		const [signingAuthority] = await this.generateSigningAuthorityPDA();
@@ -66,6 +84,12 @@ export class Market {
 		});
 	}
 
+	/**
+	 * Withdraw from the market's liquidity pool
+	 * @param amount Amount to withdraw
+	 * @param investor Public key to withdraw for. Should be the public key of the wallet of the client.
+	 * @returns
+	 */
 	async withdraw(amount: Big, investor: PublicKey) {
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
 		const [signingAuthority] = await this.generateSigningAuthorityPDA();
@@ -97,6 +121,15 @@ export class Market {
 		});
 	}
 
+	/**
+	 * Create a deal for this market
+	 * @param principal Principal of the deal
+	 * @param financingFee Financing fee of the deal. This is the annualized interest rate that needs to be repaid on top of the principal
+	 * @param timeToMaturity Time until the principal has to be repaid. Should be a multiple of 30.
+	 * @param borrower Borrower for which we create the deal.
+	 * @param dealName Name of the deal.
+	 * @returns
+	 */
 	async createDeal(
 		principal: Big,
 		financingFee: number,
@@ -149,30 +182,52 @@ export class Market {
 		);
 	}
 
+	/**
+	 * Address of the program to which this market belongs
+	 */
 	get programId() {
 		return this.program.programId;
 	}
 
+	/**
+	 * Address of the base mint for this market. Base tokens are the currency deals are created for (e.g. USDC)
+	 */
 	get baseMintPK() {
 		return this.programVersion.liquidityPoolTokenMintAccount;
 	}
 
+	/**
+	 * Address of the mint of LP token.
+	 */
 	get lpMintPK() {
 		return this.programVersion.lpTokenMintAccount;
 	}
 
+	/**
+	 * Address of the treasury of this market
+	 */
 	get treasury() {
 		return this.programVersion.treasuryPoolTokenAccount;
 	}
 
+	/**
+	 * Withdrawal fee for this market
+	 */
 	get withdrawFee() {
 		return this.programVersion.withdrawalFee;
 	}
 
+	/**
+	 * Interest repayment fee for this market. This is taken from the repayments, not added on top.
+	 */
 	get interestFee() {
 		return this.programVersion.interestFee;
 	}
 
+	/**
+	 * Gets the current supply of LP tokens for the lp mint this market uses
+	 * @returns
+	 */
 	getLPSupply() {
 		const lpTokenMint = this.lpMintPK;
 		return this.program.provider.connection
@@ -180,6 +235,10 @@ export class Market {
 			.then((response) => response.value);
 	}
 
+	/**
+	 * Gets the current price of LP tokens in base
+	 * @returns
+	 */
 	async getLPPrice() {
 		const tvl = await this.calculateTVL();
 		const lpSupply = await this.getLPSupply();
@@ -192,6 +251,12 @@ export class Market {
 		return tvl.div(lpSupplyBig);
 	}
 
+	/**
+	 * Calculates the associated token account for the base mint of this market
+	 * @param pk Public key to find the associated token account for
+	 * @param offCurve Determines if the associated token account is allowed to be off curve
+	 * @returns
+	 */
 	// TODO: does this belong on Market?
 	findBaseTokenAccount(pk: PublicKey, offCurve?: boolean) {
 		return Token.getAssociatedTokenAddress(
@@ -203,6 +268,12 @@ export class Market {
 		);
 	}
 
+	/**
+	 * Calculates the associated token account for the lp mint of this market
+	 * @param pk Public key to find the associated token account for
+	 * @param offCurve Determines if the associated token account is allowed to be off curve
+	 * @returns
+	 */
 	findLPTokenAccount(pk: PublicKey, offCurve?: boolean) {
 		return Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -213,6 +284,11 @@ export class Market {
 		);
 	}
 
+	/**
+	 * Gets the amount of 'base' the user has
+	 * @param user Public key for which we find the base balance
+	 * @returns
+	 */
 	async userBaseBalance(user: PublicKey) {
 		const userBaseTokenAccount = await this.findBaseTokenAccount(user);
 		const response = await this.program.provider.connection.getTokenAccountBalance(
@@ -221,6 +297,11 @@ export class Market {
 		return response.value;
 	}
 
+	/**
+	 * Gets the amount of LP the user has
+	 * @param user Public key for which we find the LP amount
+	 * @returns
+	 */
 	async userLPBalance(user: PublicKey) {
 		const userLPTokenAccount = await this.findLPTokenAccount(user);
 		const response = await this.program.provider.connection.getTokenAccountBalance(
@@ -230,6 +311,10 @@ export class Market {
 		return response.value;
 	}
 
+	/**
+	 * Gets how base is currently in the liquidity pool
+	 * @returns
+	 */
 	async fetchLiquidityPoolBalance() {
 		const liquidityPoolBaseTokenAccountPK = await this.findLiquidityPoolTokenAccount();
 		const response = await this.program.provider.connection.getTokenAccountBalance(
@@ -238,14 +323,26 @@ export class Market {
 		return response.value;
 	}
 
+	/**
+	 * Gets how much principal is currently being lend out in deals
+	 */
 	get totalOutstandingCredit() {
 		return new Big(this.programVersion.totalOutstandingCredit.toNumber());
 	}
 
+	/**
+	 * The gatekeeper network this market uses for identity identification
+	 */
 	get gateKeeperNetwork() {
 		return this.programVersion.gatekeeperNetwork;
 	}
 
+	/**
+	 * Fetches deal data
+	 * @param borrower Borrower to which the deal belongs
+	 * @param dealNumber The id of the deal, scoped to the borrower
+	 * @returns
+	 */
 	async fetchDeal(borrower: BorrowerInfo, dealNumber: number) {
 		const [dealAddress] = await Deal.generatePDA(borrower.address, dealNumber, this);
 		const programDeal = await this.program.account.deal.fetchNullable(dealAddress);
@@ -257,6 +354,10 @@ export class Market {
 		return new Deal(programDeal, this, dealAddress, this.program, this.client);
 	}
 
+	/**
+	 * Calculates the weighted average financing fee
+	 * @returns
+	 */
 	async calculateWeightedAverageFinancingFee() {
 		const deals = await this.fetchDeals();
 		let principalSum = new Big(0);
@@ -282,6 +383,10 @@ export class Market {
 		return new Ratio(numerator.toNumber(), 100);
 	}
 
+	/**
+	 * Calculates the total value locked of the market (liquidity pool balance + total outstanding credit)
+	 * @returns
+	 */
 	async calculateTVL() {
 		const liquidityPoolBalance = await this.fetchLiquidityPoolBalance();
 		const base_in_liquidity_pool = new Big(liquidityPoolBalance.amount);
@@ -289,6 +394,10 @@ export class Market {
 		return this.totalOutstandingCredit.add(base_in_liquidity_pool);
 	}
 
+	/**
+	 * Fetches all the deals that belong to this market
+	 * @returns
+	 */
 	async fetchDeals() {
 		const deals = await this.program.account.deal.all();
 
@@ -307,6 +416,11 @@ export class Market {
 		);
 	}
 
+	/**
+	 * Fetches the account containing borrower info for this market
+	 * @param borrower
+	 * @returns
+	 */
 	async fetchBorrowerInfo(borrower: PublicKey) {
 		const [address] = await BorrowerInfo.generatePDA(borrower, this);
 		const programBorrower = await this.program.account.borrowerInfo.fetchNullable(address);
@@ -318,15 +432,22 @@ export class Market {
 		return new BorrowerInfo(programBorrower, this, address, borrower, this.client);
 	}
 
-	async fetchBorrowerInfos() {
-		throw new Error("not implemented");
-	}
-
+	/**
+	 * Fetches a credix pass
+	 * @param borrower Public key for which we fetch a credix pass
+	 * @returns
+	 */
 	async fetchCredixPass(borrower: PublicKey) {
 		const [passAddress] = await CredixPass.generatePDA(borrower, this);
 		return this.program.account.credixPass.fetchNullable(passAddress);
 	}
 
+	/**
+	 * Generate a market PDA address
+	 * @param marketName
+	 * @param programId
+	 * @returns
+	 */
 	static generatePDA(marketName: string, programId: PublicKey) {
 		const seed = encodeSeedString(marketName);
 		return PublicKey.findProgramAddress([seed], programId);
@@ -338,16 +459,29 @@ export class Market {
 		return PublicKey.findProgramAddress(seed, this.programId);
 	}
 
+	/**
+	 * Generate the signing authority PDA address for this market
+	 * @returns
+	 */
 	generateSigningAuthorityPDA() {
 		const seed = [this.address.toBuffer()];
 		return PublicKey.findProgramAddress(seed, this.programId);
 	}
 
+	/**
+	 * Calculates the associated token account address for the liquidity pool
+	 * @returns
+	 */
 	async findLiquidityPoolTokenAccount() {
 		const [signingAuthorityPK] = await this.generateSigningAuthorityPDA();
 		return this.findBaseTokenAccount(signingAuthorityPK);
 	}
 
+	/**
+	 * Calculates the stake of a user expressed in base
+	 * @param user Public key for which we check the stake
+	 * @returns
+	 */
 	async getUserStake(user: PublicKey) {
 		const lpPrice = await this.getLPPrice();
 		const userLpTokenAmount = await this.userLPBalance(user);
@@ -356,6 +490,13 @@ export class Market {
 		return userLpTokenAmountBig.mul(lpPrice);
 	}
 
+	/**
+	 * Issue a credix pass. This function requires that the client wallet to belong to a management address
+	 * @param pk Public key for which we issue a credix pass
+	 * @param underwriter Enable underwriter functionality.
+	 * @param borrower Enable borrower functionality (creation of deals)
+	 * @returns
+	 */
 	async issueCredixPass(pk: PublicKey, underwriter: boolean, borrower: boolean) {
 		const [credixPassAddress, credixPassBump] = await CredixPass.generatePDA(pk, this);
 
@@ -371,6 +512,13 @@ export class Market {
 		});
 	}
 
+	/**
+	 * Update a credix pass. This function requires that the client wallet to belong to a management address
+	 * @param pk Public key for which we issue a credix pass
+	 * @param underwriter Enable underwriter functionality.
+	 * @param borrower Enable borrower functionality (creation of deals)
+	 * @returns
+	 */
 	async updateCredixPass(pk: PublicKey, active: boolean, underwriter: boolean, borrower: boolean) {
 		const [credixPassAddress] = await CredixPass.generatePDA(pk, this);
 
@@ -382,10 +530,5 @@ export class Market {
 				globalMarketState: this.address,
 			},
 		});
-	}
-
-	async getCredixPass(pk: PublicKey) {
-		const [credixPassAddress] = await CredixPass.generatePDA(pk, this);
-		return this.program.account.credixPass.fetchNullable(credixPassAddress);
 	}
 }

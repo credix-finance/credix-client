@@ -1,8 +1,8 @@
 import { PublicKey } from "@solana/web3.js";
-import { BorrowerInfo as IDLBorrowerInfo, CredixProgram } from "idl/idl.types";
-import { Market } from "./Market";
-import { encodeSeedString } from "utils/pda.utils";
+import { BorrowerInfo as IDLBorrowerInfo } from "idl/idl.types";
 import { CredixClient } from "index";
+import { encodeSeedString } from "utils/pda.utils";
+import { Market } from "./Market";
 
 export class BorrowerInfo {
 	market: Market;
