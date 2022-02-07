@@ -11,11 +11,23 @@ import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token
 import { CredixPass } from "./CredixPass";
 
 export enum DealStatus {
+	/**
+	 * The deal is repaid
+	 */
 	CLOSED,
+	/**
+	 * The deal is active but not yet repaid
+	 */
 	IN_PROGRESS,
+	/**
+	 * The deal has not yet activated. I.e. the borrower hasn't received money yet.
+	 */
 	PENDING,
 }
 
+/**
+ * Deal in a market
+ */
 export class Deal {
 	address: PublicKey;
 	market: Market;
@@ -23,6 +35,9 @@ export class Deal {
 	private program: CredixProgram;
 	private client: CredixClient;
 
+	/**
+	 * @ignore
+	 */
 	constructor(
 		deal: ProgramDeal,
 		market: Market,
@@ -37,6 +52,13 @@ export class Deal {
 		this.client = client;
 	}
 
+	/**
+	 * Generate a deal PDA
+	 * @param borrower Borrower of the deal
+	 * @param dealNumber Number of the deal
+	 * @param market Market to which the deal belongs
+	 * @returns
+	 */
 	static generatePDA(borrower: PublicKey, dealNumber: number, market: Market) {
 		const dealSeed = encodeSeedString("deal-info");
 		const dealNumberSeed = new BN(dealNumber).toArrayLike(Buffer, "le", 2);
@@ -45,11 +67,17 @@ export class Deal {
 		return PublicKey.findProgramAddress(seed, market.programId);
 	}
 
+	/**
+	 * Name of the deal
+	 */
 	get name() {
 		return this.programVersion.name;
 	}
 
-	get createAt() {
+	/**
+	 * Timestamp of deal creation
+	 */
+	get createdAt() {
 		return this.programVersion.createdAt;
 	}
 
@@ -57,6 +85,9 @@ export class Deal {
 		return this.programVersion.leverageRatio;
 	}
 
+	/**
+	 * Fee for the underwriters for underwriting the deal
+	 */
 	get underwriterPerformanceFeePercentage() {
 		return new Ratio(
 			this.programVersion.underwriterPerformanceFeePercentage.numerator,
@@ -64,10 +95,16 @@ export class Deal {
 		);
 	}
 
+	/**
+	 * Number of the deal
+	 */
 	get number() {
 		return this.programVersion.dealNumber;
 	}
 
+	/**
+	 * Fees accrued by missed payments
+	 */
 	get lateFees() {
 		return this.programVersion.lateFees;
 	}
@@ -84,22 +121,37 @@ export class Deal {
 		return this.programVersion.defaulted;
 	}
 
+	/**
+	 * How much was lent
+	 */
 	get principal() {
 		return new Big(this.programVersion.principal.toNumber());
 	}
 
+	/**
+	 * How much of the principal was repaid
+	 */
 	get principalAmountRepaid() {
 		return new Big(this.programVersion.principalAmountRepaid.toNumber());
 	}
 
+	/**
+	 * The principal that is yet to be repaid
+	 */
 	get principalToRepay() {
 		return this.principal.minus(this.principalAmountRepaid);
 	}
 
+	/**
+	 * How much of the interest was repaid
+	 */
 	get interestRepaid() {
 		return new Big(this.programVersion.interestAmountRepaid.toNumber());
 	}
 
+	/**
+	 * Total interest accrued by the deal
+	 */
 	get totalInterest() {
 		const timeToMaturityRatio = new Ratio(this.timeToMaturity, 360);
 		const interest = this.financingFeePercentage.apply(this.principal);
@@ -108,6 +160,9 @@ export class Deal {
 		return totalInterest.round(0, Big.roundDown);
 	}
 
+	/**
+	 * How much interest is yet to be repaid
+	 */
 	get interestToRepay() {
 		return this.totalInterest.minus(this.interestRepaid);
 	}
@@ -123,6 +178,9 @@ export class Deal {
 		return this.programVersion.timeToMaturityDays;
 	}
 
+	/**
+	 * When the deal went live. This is the moment where funds are transferred to the borrower
+	 */
 	get goLiveAt() {
 		const goLiveAt = this.programVersion.goLiveAt;
 
@@ -153,6 +211,9 @@ export class Deal {
 		return this.status === DealStatus.IN_PROGRESS;
 	}
 
+	/**
+	 * Gets the remaining time before this deal goes into late fees
+	 */
 	get daysRemaining() {
 		if (!this.goLiveAt || this.isPending()) {
 			return this.timeToMaturity;
@@ -168,10 +229,17 @@ export class Deal {
 		return Math.max(Math.round(daysRemaining * 10) / 10, 0);
 	}
 
+	/**
+	 * Get address of the borrower. This is not borrower info but the actual recipient of the funds
+	 */
 	get borrower() {
 		return this.programVersion.borrower;
 	}
 
+	/**
+	 * Activates this deal
+	 * @returns
+	 */
 	async activate() {
 		const gatewayToken = await this.client.getGatewayToken(
 			this.borrower,
@@ -207,10 +275,20 @@ export class Deal {
 		});
 	}
 
+	/**
+	 * Repays principal of the deal. This needs to happen after the interest repayments
+	 * @param amount
+	 * @returns
+	 */
 	async repayPrincipal(amount: Big) {
 		return this.repay(amount, { interest: {} });
 	}
 
+	/**
+	 * Repays interest of the deal. This needs to happen before principal repayments.
+	 * @param amount
+	 * @returns
+	 */
 	async repayInterest(amount: Big) {
 		return this.repay(amount, { principal: {} });
 	}
