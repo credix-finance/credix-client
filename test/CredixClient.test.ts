@@ -2,9 +2,8 @@ import { expect, use } from "chai";
 import Sinon from "sinon";
 import { programMarketFixture } from "./fixtures/Market.fixture";
 import { chaiSolana } from "@saberhq/chai-solana";
-import { testClient, testConnection, testCredixClientConfig } from "./util";
+import { testClient, testConnection, testCredixClientConfig, testProgramId } from "./util";
 import { CredixClient, CredixClientConfig } from "../src/rpc/CredixClient";
-import { PublicKey } from "@solana/web3.js";
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
 
 use(chaiSolana);
@@ -36,7 +35,7 @@ describe("Credix Client", () => {
 
 	it("uses default options if not provided", () => {
 		const config: CredixClientConfig = {
-			programId: new PublicKey("CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX"),
+			programId: testProgramId,
 		};
 
 		expect(config.confirmOptions).to.be.undefined;

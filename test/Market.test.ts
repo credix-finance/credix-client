@@ -1,7 +1,5 @@
-import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
 import { chaiSolana } from "@saberhq/chai-solana";
 import { Market } from "accounts/Market";
-import { Big } from "big.js";
 import { expect, use } from "chai";
 import Sinon from "sinon";
 import { programMarketFixture } from "./fixtures/Market.fixture";
@@ -36,24 +34,4 @@ describe("Market", async () => {
 		const [marketAddress] = await Market.generatePDA(marketName, testCredixClientConfig.programId);
 		expect(market?.address).to.eqAddress(marketAddress);
 	});
-
-	/* it("should deposit funds", async () => {
-		const stub = sandbox.stub(testConnection, "getAccountInfo");
-		stub.returns(Promise.resolve(programMarketFixture));
-
-		const marketName = "credix-marketplace";
-		const market = await testClient.fetchMarket(marketName);
-
-		const amount = new Big(1_000_000_000);
-		const investor = NodeWallet.local().publicKey;
-
-		if (!market) {
-			throw Error("no market");
-		}
-
-		const depositSpy = sandbox.spy(market, "deposit");
-
-		await market.deposit(amount, investor);
-		console.log("spy", depositSpy, depositSpy.callCount, depositSpy.arguments);
-	}); */
 });

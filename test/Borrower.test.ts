@@ -1,11 +1,12 @@
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
-import { Connection, PublicKey } from "@solana/web3.js";
-import { CredixClientConfig, CredixClient } from "index";
+import { Connection } from "@solana/web3.js";
+import { CredixClient, CredixClientConfig } from "index";
+import { testProgramId } from "./util";
 
 describe("Borrower", () => {
 	const connection = new Connection("http://127.0.0.1:8899");
 	const credixClientConfig: CredixClientConfig = {
-		programId: new PublicKey("CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX"),
+		programId: testProgramId,
 		confirmOptions: { commitment: "finalized" },
 	};
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
