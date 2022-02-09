@@ -1,6 +1,11 @@
 {
 	"include": [
-		"src"
+		"src/**/*",
+		"test/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"**/node_modules"
 	],
 	"compilerOptions": {
 		"allowUnreachableCode": false,
@@ -27,5 +32,6 @@
 		"forceConsistentCasingInFileNames": true,
 		"module": "commonjs",
 		"declaration": true,
+		"skipLibCheck": true,
 	},
 }
