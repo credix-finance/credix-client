@@ -16,9 +16,12 @@ import { ZERO } from "utils/math.utils";
 /**
  * Represents a Credix market. Main entrypoint for market interactions
  */
+
+/**
+ */
 export class Market {
 	/**
-	 * Name of the market
+	 * Name of the marketttttt
 	 */
 	name: string;
 	/**
