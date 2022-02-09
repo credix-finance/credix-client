@@ -19,7 +19,8 @@
 		"lint": "yarn eslint src/",
 		"format": "yarn prettier --check src/",
 		"clean": "rm -rf build/",
-		"test": "NODE_PATH=./src/ nyc mocha"
+		"test": "NODE_PATH=./src/ nyc mocha",
+		"build-docs": "yarn typedoc src/index.ts --excludePrivate"
 	},
 	"browserslist": {
 		"production": [
