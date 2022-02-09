@@ -177,15 +177,16 @@ export class Deal {
 			this.borrower,
 			this.market.gateKeeperNetwork
 		);
-		const [signingAuthorityAddress] = await this.market.generateSigningAuthorityPDA();
-		const liquidityPoolTokenAccount = await this.market.findLiquidityPoolTokenAccount();
-		const borrowerTokenAccount = await this.market.findBaseTokenAccount(this.borrower);
-		const [credixPassAddress] = await CredixPass.generatePDA(this.borrower, this.market);
 
 		if (!gatewayToken) {
 			// TODO: centralize these errors
 			throw new Error("No valid Civic gateway gateway token found");
 		}
+
+		const [signingAuthorityAddress] = await this.market.generateSigningAuthorityPDA();
+		const liquidityPoolTokenAccount = await this.market.findLiquidityPoolTokenAccount();
+		const borrowerTokenAccount = await this.market.findBaseTokenAccount(this.borrower);
+		const [credixPassAddress] = await CredixPass.generatePDA(this.borrower, this.market);
 
 		return this.program.rpc.activateDeal({
 			accounts: {
@@ -221,15 +222,16 @@ export class Deal {
 			this.borrower,
 			this.market.gateKeeperNetwork
 		);
-		const borrowerTokenAccount = await this.market.findBaseTokenAccount(this.borrower);
-		const liquidityPoolTokenAccount = await this.market.findLiquidityPoolTokenAccount();
-		const [signingAuthorityAddress] = await this.market.generateSigningAuthorityPDA();
-		const [credixPassAddress] = await CredixPass.generatePDA(this.borrower, this.market);
 
 		if (!gatewayToken) {
 			// TODO: centralize these errors
 			throw new Error("No valid Civic gateway gateway token found");
 		}
+
+		const borrowerTokenAccount = await this.market.findBaseTokenAccount(this.borrower);
+		const liquidityPoolTokenAccount = await this.market.findLiquidityPoolTokenAccount();
+		const [signingAuthorityAddress] = await this.market.generateSigningAuthorityPDA();
+		const [credixPassAddress] = await CredixPass.generatePDA(this.borrower, this.market);
 
 		return this.program.rpc.makeDealRepayment(repayAmount, repaymentType, {
 			accounts: {

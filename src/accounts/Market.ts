@@ -36,15 +36,16 @@ export class Market {
 
 	async deposit(amount: Big, investor: PublicKey) {
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
+
+		if (!gatewayToken) {
+			throw Error("No valid Civic gateway token found");
+		}
+
 		const [signingAuthority] = await this.generateSigningAuthorityPDA();
 		const investorTokenAccount = await this.findBaseTokenAccount(investor);
 		const liquidityPoolTokenAccount = await this.findLiquidityPoolTokenAccount();
 		const investorLPTokenAccount = await this.findLPTokenAccount(investor);
 		const [credixPass] = await this.generateCredixPassPDA(investor);
-
-		if (!gatewayToken) {
-			throw Error("No valid Civic gateway token found");
-		}
 
 		return this.program.rpc.depositFunds(new BN(amount.toNumber()), {
 			accounts: {
@@ -68,15 +69,16 @@ export class Market {
 
 	async withdraw(amount: Big, investor: PublicKey) {
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
+
+		if (!gatewayToken) {
+			throw Error("No valid Civic gateway token found");
+		}
+
 		const [signingAuthority] = await this.generateSigningAuthorityPDA();
 		const investorTokenAccount = await this.findBaseTokenAccount(investor);
 		const liquidityPoolTokenAccount = await this.findLiquidityPoolTokenAccount();
 		const investorLPTokenAccount = await this.findLPTokenAccount(investor);
 		const [credixPass] = await this.generateCredixPassPDA(investor);
-
-		if (!gatewayToken) {
-			throw Error("No valid Civic gateway token found");
-		}
 
 		return this.program.rpc.withdrawFunds(new BN(amount.toNumber()), {
 			accounts: {
@@ -109,21 +111,22 @@ export class Market {
 			throw Error("Time to maturity needs to be a multiple of 30");
 		}
 
+		const gatewayToken = await this.client.getGatewayToken(borrower, this.gateKeeperNetwork);
+
+		if (!gatewayToken) {
+			throw new Error("No valid Civic gateway token found");
+		}
+
 		const [borrowerInfoAddress, borrowerInfoBump] = await BorrowerInfo.generatePDA(borrower, this);
 		const borrowerInfo = await this.fetchBorrowerInfo(borrower);
 		const dealNumber = borrowerInfo ? borrowerInfo.numberOfDeals + 1 : 0;
 		const [dealAddress, dealBump] = await Deal.generatePDA(borrower, dealNumber, this);
 		const [credixPassAddress] = await CredixPass.generatePDA(borrower, this);
-		const gatewayToken = await this.client.getGatewayToken(borrower, this.gateKeeperNetwork);
 
 		const principalAmount = new BN(principal.toNumber());
 		// TODO: do we need this dependency?
 		const financingFreeFraction = new Fraction(financingFee);
 		const financingFeeRatio = new Ratio(financingFreeFraction.n, financingFreeFraction.d * 100);
-
-		if (!gatewayToken) {
-			throw new Error("No valid Civic gateway token found");
-		}
 
 		return this.program.rpc.createDeal(
 			dealBump,
