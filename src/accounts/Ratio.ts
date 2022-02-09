@@ -14,6 +14,10 @@ export class Ratio {
 		return to.mul(this.numerator).div(this.denominator);
 	}
 
+	/**
+	 * Helper function to convert this into something that is understandable program side
+	 * @returns
+	 */
 	toIDLRatio(): IDLRatio {
 		return { numerator: this.numerator.toNumber(), denominator: this.denominator.toNumber() };
 	}
