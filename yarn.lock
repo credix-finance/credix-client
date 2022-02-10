@@ -264,7 +264,6 @@ __metadata:
     big.js: ^6.1.1
     bn.js: ^5.2.0
     chai: ^4.3.5
-    dotenv: ^14.3.2
     eslint: ^8.7.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-react: ^7.28.0
@@ -1900,13 +1899,6 @@ __metadata:
   version: 10.0.0
   resolution: "dotenv@npm:10.0.0"
   checksum: f412c5fe8c24fbe313d302d2500e247ba8a1946492db405a4de4d30dd0eb186a88a43f13c958c5a7de303938949c4231c56994f97d05c4bc1f22478d631b4005
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^14.3.2":
-  version: 14.3.2
-  resolution: "dotenv@npm:14.3.2"
-  checksum: 86c06758915d6facc35275f4a7fafc16705b6f3b44befaa8abca91367991efc8ff8db5437d3cc14778231d19fb97610fe82d60f8a53ba723cdb69fe4171439aa
   languageName: node
   linkType: hard
 
