@@ -442,7 +442,13 @@ export class Market {
 	 */
 	async fetchCredixPass(borrower: PublicKey) {
 		const [passAddress] = await CredixPass.generatePDA(borrower, this);
-		return this.program.account.credixPass.fetchNullable(passAddress);
+		const pass = await this.program.account.credixPass.fetchNullable(passAddress);
+
+		if (!pass) {
+			return pass;
+		}
+
+		return new CredixPass(pass, passAddress);
 	}
 
 	/**
