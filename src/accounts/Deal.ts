@@ -183,7 +183,6 @@ export class Deal {
 	 */
 	get goLiveAt() {
 		const goLiveAt = this.programVersion.goLiveAt;
-
 		return goLiveAt.bitLength() > 53 ? null : goLiveAt.toNumber();
 	}
 
@@ -192,7 +191,7 @@ export class Deal {
 			return DealStatus.PENDING;
 		}
 
-		if (this.principal.eq(ZERO) && this.interestToRepay.eq(ZERO)) {
+		if (this.principalToRepay.eq(ZERO) && this.interestToRepay.eq(ZERO)) {
 			return DealStatus.CLOSED;
 		}
 
