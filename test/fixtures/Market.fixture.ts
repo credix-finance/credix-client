@@ -1,12 +1,31 @@
-import { PublicKey } from "@solana/web3.js";
+import { BN } from "@project-serum/anchor";
+import { AccountInfo, Keypair } from "@solana/web3.js";
+import { GlobalMarketState } from "idl/idl.types";
+import { testProgram } from "../util";
 
-export const programMarketFixture = {
-	data: Buffer.from(
-		"GN4C+jrhZ5mhJ6rTFiuG60Eu6JTLm/uPOqYF5HvmpronHDUsQgPgSOkoOVUJZf/U1krKr0bUXfcxjltPV8kMSH1gYl2Cm4N7Y3DTOLyC2Z66c0Azlz2sRVafgQQ0JFNpQ3Fz+YLEMNsAAAAAAAAAAABXm+sDHcHRR/fsIztGdB16/p0POId1KCqiGfNBhlEV//wKAAAAZAAAAAUAAADoAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-		"base64"
-	),
-	executable: false,
-	lamports: 3173760,
-	owner: new PublicKey("CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX"),
-	rentEpoch: 0,
+export const globalMarketFixture: GlobalMarketState = {
+	gatekeeperNetwork: Keypair.generate().publicKey,
+	liquidityPoolTokenMintAccount: Keypair.generate().publicKey,
+	lpTokenMintAccount: Keypair.generate().publicKey,
+	treasuryPoolTokenAccount: Keypair.generate().publicKey,
+	totalOutstandingCredit: new BN(10),
+	signingAuthorityBump: 255,
+	bump: 252,
+	interestFee: { numerator: 10, denominator: 100 },
+	withdrawalFee: { numerator: 5, denominator: 1000 },
+	frozen: false,
+};
+
+export const programMarketFixture = async (
+	market: GlobalMarketState
+): Promise<AccountInfo<Buffer>> => {
+	const data = await testProgram.coder.accounts.encode("globalMarketState", market);
+
+	return {
+		data: data,
+		executable: false,
+		lamports: 3173760,
+		owner: Keypair.generate().publicKey,
+		rentEpoch: 0,
+	};
 };
