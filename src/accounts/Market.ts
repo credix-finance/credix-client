@@ -346,8 +346,8 @@ export class Market {
 	 * @param dealNumber The id of the deal, scoped to the borrower
 	 * @returns
 	 */
-	async fetchDeal(borrower: BorrowerInfo, dealNumber: number) {
-		const [dealAddress] = await Deal.generatePDA(borrower.address, dealNumber, this);
+	async fetchDeal(borrower: PublicKey, dealNumber: number) {
+		const [dealAddress] = await Deal.generatePDA(borrower, dealNumber, this);
 		const programDeal = await this.program.account.deal.fetchNullable(dealAddress);
 
 		if (!programDeal) {
