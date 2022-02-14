@@ -1,40 +1,214 @@
-import { testClient } from "./util";
+import { Keypair, PublicKey } from "@solana/web3.js";
+import { expect } from "chai";
+import { BorrowerInfo, Deal, Market } from "index";
+import Sinon from "sinon";
+import { encodeSeedString } from "utils/pda.utils";
+import { borrowerInfoFixture } from "./fixtures/BorrowerInfo.fixture";
+import { programDealFixture, dealFixture } from "./fixtures/Deal.fixture";
+import { globalMarketFixture } from "./fixtures/Market.fixture";
+import { testClient, testConnection, testProgram } from "./util";
 
 describe("Borrower", () => {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const client = testClient;
+	const sandbox = Sinon.createSandbox();
 
-	it("returns the correct market", () => {
-		throw Error("not implemented");
+	afterEach(() => {
+		sandbox.restore();
+	});
+
+	it("returns the correct market", async () => {
+		const marketAddress = Keypair.generate();
+		const market = new Market(
+			globalMarketFixture,
+			"market",
+			testProgram,
+			marketAddress.publicKey,
+			testClient
+		);
+		const borrower = Keypair.generate();
+		const borrowerInfoAddress = Keypair.generate();
+		const borrowerInfo = new BorrowerInfo(
+			borrowerInfoFixture,
+			market,
+			borrowerInfoAddress.publicKey,
+			borrower.publicKey,
+			testClient
+		);
+
+		expect(borrowerInfo.market).to.equal(market);
 	});
 
 	it("returns the correct address", () => {
-		throw Error("not implemented");
+		const marketAddress = Keypair.generate();
+		const market = new Market(
+			globalMarketFixture,
+			"market",
+			testProgram,
+			marketAddress.publicKey,
+			testClient
+		);
+		const borrower = Keypair.generate();
+		const borrowerInfoAddress = Keypair.generate();
+		const borrowerInfo = new BorrowerInfo(
+			borrowerInfoFixture,
+			market,
+			borrowerInfoAddress.publicKey,
+			borrower.publicKey,
+			testClient
+		);
+
+		expect(borrowerInfo.address.equals(borrowerInfoAddress.publicKey)).to.be.true;
 	});
 
 	it("returns the correct borrower key", () => {
-		throw Error("not implemented");
+		const marketAddress = Keypair.generate();
+		const market = new Market(
+			globalMarketFixture,
+			"market",
+			testProgram,
+			marketAddress.publicKey,
+			testClient
+		);
+		const borrower = Keypair.generate();
+		const borrowerInfoAddress = Keypair.generate();
+		const borrowerInfo = new BorrowerInfo(
+			borrowerInfoFixture,
+			market,
+			borrowerInfoAddress.publicKey,
+			borrower.publicKey,
+			testClient
+		);
+
+		expect(borrowerInfo.borrower.equals(borrower.publicKey)).to.be.true;
 	});
 
 	it("returns the correct number of deals", () => {
-		throw Error("not implemented");
+		const marketAddress = Keypair.generate();
+		const market = new Market(
+			globalMarketFixture,
+			"market",
+			testProgram,
+			marketAddress.publicKey,
+			testClient
+		);
+		const borrower = Keypair.generate();
+		const borrowerInfoAddress = Keypair.generate();
+		const borrowerInfo = new BorrowerInfo(
+			borrowerInfoFixture,
+			market,
+			borrowerInfoAddress.publicKey,
+			borrower.publicKey,
+			testClient
+		);
+
+		expect(borrowerInfo.numberOfDeals).to.equal(borrowerInfoFixture.numOfDeals);
 	});
 
-	it("fetches a deal for a borrower", () => {
-		throw Error("not implemented");
+	it("fetches a deal for a borrower", async () => {
+		const marketAddress = Keypair.generate();
+		const market = new Market(
+			globalMarketFixture,
+			"market",
+			testProgram,
+			marketAddress.publicKey,
+			testClient
+		);
+		const borrower = Keypair.generate();
+		const borrowerInfoAddress = Keypair.generate();
+		const borrowerInfo = new BorrowerInfo(
+			borrowerInfoFixture,
+			market,
+			borrowerInfoAddress.publicKey,
+			borrower.publicKey,
+			testClient
+		);
+
+		const dealAddress = await Deal.generatePDA(borrower.publicKey, 0, market);
+		const getAccountInfoStub = sandbox.stub(testConnection, "getAccountInfo");
+		getAccountInfoStub
+			.withArgs(dealAddress[0])
+			.returns(
+				Promise.resolve(
+					programDealFixture({ ...dealFixture, borrower: borrower.publicKey, bump: dealAddress[1] })
+				)
+			);
+
+		const deal = await borrowerInfo.fetchDeal(0);
+
+		expect(deal?.address.equals(dealAddress[0])).to.be.true;
 	});
 
-	it("fetches different deals based on their number", () => {
-		throw Error("not implemented");
+	it("fetches different deals based on their number", async () => {
+		const marketAddress = Keypair.generate();
+		const market = new Market(
+			globalMarketFixture,
+			"market",
+			testProgram,
+			marketAddress.publicKey,
+			testClient
+		);
+		const borrower = Keypair.generate();
+		const borrowerInfoAddress = Keypair.generate();
+		const borrowerInfo = new BorrowerInfo(
+			borrowerInfoFixture,
+			market,
+			borrowerInfoAddress.publicKey,
+			borrower.publicKey,
+			testClient
+		);
+
+		const dealAddressA = await Deal.generatePDA(borrower.publicKey, 0, market);
+		const dealAddressB = await Deal.generatePDA(borrower.publicKey, 1, market);
+		const getAccountInfoStub = sandbox.stub(testConnection, "getAccountInfo");
+		getAccountInfoStub.withArgs(dealAddressA[0]).returns(
+			Promise.resolve(
+				programDealFixture({
+					...dealFixture,
+					borrower: borrower.publicKey,
+					bump: dealAddressA[1],
+					dealNumber: 0,
+				})
+			)
+		);
+		getAccountInfoStub.withArgs(dealAddressB[0]).returns(
+			Promise.resolve(
+				programDealFixture({
+					...dealFixture,
+					borrower: borrower.publicKey,
+					bump: dealAddressB[1],
+					dealNumber: 1,
+				})
+			)
+		);
+
+		const dealA = await borrowerInfo.fetchDeal(0);
+		const dealB = await borrowerInfo.fetchDeal(1);
+
+		expect(dealA?.address.equals(dealAddressA[0])).to.be.true;
+		expect(dealB?.address.equals(dealAddressB[0])).to.be.true;
+		expect(dealA?.number).to.equal(0);
+		expect(dealB?.number).to.equal(1);
+		expect(dealA?.address).to.not.equal(dealB?.address);
 	});
 
-	it("fetches all deals for a borrower", () => {
-		throw Error("not implemented");
-	});
+	it("generates a PDA", async () => {
+		const marketAddress = Keypair.generate();
+		const market = new Market(
+			globalMarketFixture,
+			"market",
+			testProgram,
+			marketAddress.publicKey,
+			testClient
+		);
+		const borrower = Keypair.generate();
+		const pda = await BorrowerInfo.generatePDA(borrower.publicKey, market);
 
-	it("generates a PDA", () => {
-		throw Error("not implemented");
+		const seeds = [
+			marketAddress.publicKey.toBuffer(),
+			borrower.publicKey.toBuffer(),
+			encodeSeedString("borrower-info"),
+		];
+		const expected = await PublicKey.findProgramAddress(seeds, market.programId);
+
+		expect(pda[0].equals(expected[0])).to.be.true;
 	});
 });
