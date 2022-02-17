@@ -51,10 +51,10 @@ export class Market {
 	/**
 	 * Deposit into the market's liquidity pool
 	 * @param amount Amount to deposit
-	 * @param investor Public key to deposit for. Should be the public key of the wallet of the client.
 	 * @returns
 	 */
-	async deposit(amount: Big, investor: PublicKey) {
+	async deposit(amount: Big) {
+		const investor = this.program.provider.wallet.publicKey;
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
 
 		if (!gatewayToken) {
@@ -90,10 +90,10 @@ export class Market {
 	/**
 	 * Withdraw from the market's liquidity pool
 	 * @param amount Amount to withdraw
-	 * @param investor Public key to withdraw for. Should be the public key of the wallet of the client.
 	 * @returns
 	 */
-	async withdraw(amount: Big, investor: PublicKey) {
+	async withdraw(amount: Big) {
+		const investor = this.program.provider.wallet.publicKey;
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
 
 		if (!gatewayToken) {
