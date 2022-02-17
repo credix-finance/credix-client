@@ -259,33 +259,32 @@ export class Market {
 	/**
 	 * Calculates the associated token account for the base mint of this market
 	 * @param pk Public key to find the associated token account for
-	 * @param offCurve Determines if the associated token account is allowed to be off curve
 	 * @returns
 	 */
-	// TODO: does this belong on Market?
-	findBaseTokenAccount(pk: PublicKey, offCurve?: boolean) {
+	// TODO: move to Mint class when available
+	findBaseTokenAccount(pk: PublicKey) {
 		return Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
 			TOKEN_PROGRAM_ID,
 			this.baseMintPK,
 			pk,
-			offCurve
+			true
 		);
 	}
 
 	/**
 	 * Calculates the associated token account for the lp mint of this market
 	 * @param pk Public key to find the associated token account for
-	 * @param offCurve Determines if the associated token account is allowed to be off curve
 	 * @returns
 	 */
-	findLPTokenAccount(pk: PublicKey, offCurve?: boolean) {
+	// TODO: move to Mint class when available
+	findLPTokenAccount(pk: PublicKey) {
 		return Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
 			TOKEN_PROGRAM_ID,
 			this.lpMintPK,
 			pk,
-			offCurve
+			true
 		);
 	}
 
@@ -486,7 +485,7 @@ export class Market {
 	 */
 	async findLiquidityPoolTokenAccount() {
 		const [signingAuthorityPK] = await this.generateSigningAuthorityPDA();
-		return this.findBaseTokenAccount(signingAuthorityPK, true);
+		return this.findBaseTokenAccount(signingAuthorityPK);
 	}
 
 	/**

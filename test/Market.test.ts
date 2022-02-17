@@ -345,7 +345,7 @@ describe("Market", async () => {
 		}
 
 		// Act
-		const baseTokenAccount = await market.findBaseTokenAccount(market.address, true);
+		const baseTokenAccount = await market.findBaseTokenAccount(market.address);
 
 		// Assert
 		const expected = await Token.getAssociatedTokenAddress(
@@ -401,7 +401,7 @@ describe("Market", async () => {
 		}
 
 		// Act
-		const baseTokenAccount = await market.findLPTokenAccount(market.address, true);
+		const baseTokenAccount = await market.findLPTokenAccount(market.address);
 
 		// Assert
 		const expected = await Token.getAssociatedTokenAddress(
@@ -614,11 +614,11 @@ describe("Market", async () => {
 
 		// Assert
 		const signingAuthority = await market.generateSigningAuthorityPDA();
-		const expected = await market.findBaseTokenAccount(signingAuthority[0], true);
+		const expected = await market.findBaseTokenAccount(signingAuthority[0]);
 		expect(liquidityPoolTokenAccount.equals(expected)).to.be.true;
 	});
 
-	it("calculates the user state in base", async () => {
+	it("calculates the user stake in base", async () => {
 		// Arrange
 		const marketFixture = await programMarketFixture(globalMarketFixture);
 
