@@ -2,6 +2,8 @@
 	"name": "@credix/credix-client",
 	"version": "0.1.0",
 	"description": "Client to interact with Credix marketplaces on Solana",
+	"main": "build/src/index.js",
+	"types": "build/src/index.d.ts",
 	"author": {
 		"name": "Credix Finance BV",
 		"email": "admin@credix.finance",
