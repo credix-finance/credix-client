@@ -1,5 +1,5 @@
-import * as React from "react";
 import { CredixClient } from "..";
+import * as React from "react";
 
 export const ClientContext = React.createContext<CredixClient | undefined>(undefined);
 
