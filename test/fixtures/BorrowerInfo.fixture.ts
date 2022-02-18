@@ -1,5 +1,5 @@
 import { AccountInfo, PublicKey } from "@solana/web3.js";
-import { BorrowerInfo } from "idl/idl.types";
+import { BorrowerInfo } from "../../src/idl/idl.types";
 import { testProgram } from "../util";
 
 export const borrowerInfoFixture: BorrowerInfo = {

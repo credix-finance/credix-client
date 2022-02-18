@@ -1,14 +1,14 @@
 import { BN } from "@project-serum/anchor";
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import { Big } from "big.js";
-import { CredixProgram, Deal as ProgramDeal, RepaymentType } from "idl/idl.types";
-import { SECONDS_IN_DAY, ZERO } from "utils/math.utils";
+import { CredixProgram, Deal as ProgramDeal, RepaymentType } from "../idl/idl.types";
 import { Market } from "./Market";
-import { encodeSeedString } from "utils/pda.utils";
 import { Ratio } from "./Ratio";
-import { CredixClient } from "index";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { CredixPass } from "./CredixPass";
+import { CredixClient } from "..";
+import { encodeSeedString } from "../utils/pda.utils";
+import { SECONDS_IN_DAY, ZERO } from "../utils/math.utils";
 
 export enum DealStatus {
 	/**

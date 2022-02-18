@@ -1,17 +1,13 @@
 import { BN, web3 } from "@project-serum/anchor";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-import { Ratio } from "accounts/Ratio";
 import Big from "big.js";
 import Fraction from "fraction.js";
-import { CredixProgram, GlobalMarketState } from "idl/idl.types";
-import { CredixClient } from "index";
-import { asyncFilter } from "utils/async.utils";
-import { ZERO } from "utils/math.utils";
-import { encodeSeedString } from "utils/pda.utils";
-import { BorrowerInfo } from "./Borrower";
-import { CredixPass } from "./CredixPass";
-import { Deal } from "./Deal";
+import { BorrowerInfo, CredixClient, CredixPass, Deal, Ratio } from "..";
+import { CredixProgram, GlobalMarketState } from "../idl/idl.types";
+import { encodeSeedString } from "../utils/pda.utils";
+import { asyncFilter } from "../utils/async.utils";
+import { ZERO } from "../utils/math.utils";
 
 /**
  * Represents a Credix market. Main entrypoint for market interactions

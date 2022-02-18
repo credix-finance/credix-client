@@ -1,7 +1,7 @@
 import { Wallet } from "@project-serum/anchor";
 import { Connection } from "@solana/web3.js";
-import { CredixClient, CredixClientConfig } from "index";
 import * as React from "react";
+import { CredixClient, CredixClientConfig } from "..";
 import { ClientContext } from "./useCredixClient";
 
 interface Props {

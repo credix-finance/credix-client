@@ -1,5 +1,5 @@
 import { AccountInfo, PublicKey } from "@solana/web3.js";
-import { CredixPass } from "idl/idl.types";
+import { CredixPass } from "../../src/idl/idl.types";
 import { testProgram } from "../util";
 
 export const credixPassFixture: CredixPass = {

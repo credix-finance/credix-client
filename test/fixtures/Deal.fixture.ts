@@ -1,6 +1,6 @@
 import { BN } from "@project-serum/anchor";
 import { AccountInfo, Keypair, PublicKey } from "@solana/web3.js";
-import { Deal } from "idl/idl.types";
+import { Deal } from "../../src/idl/idl.types";
 import { testProgram } from "../util";
 
 export const dealFixture: Deal = {
