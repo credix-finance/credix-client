@@ -3,7 +3,7 @@ name: CICD
 on:
   push:
     branches:
-      -localnet
+      - localnet
       - devnet
       - mainnet
   pull_request:
