@@ -22,8 +22,6 @@ We use eslint and prettier to lint and format our codebase. An editorconfig file
 
 # Usage
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Local usage in other projects
 
 ### Link
