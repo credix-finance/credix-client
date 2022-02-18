@@ -43,6 +43,7 @@ To get started:
 
 - Run `yarn link ~/path/to/credix-client` inside the other project
 - Copy the new resolutions entry in `package.json` to the dependencies
+- Run `yarn`
 
 When you are done
 
