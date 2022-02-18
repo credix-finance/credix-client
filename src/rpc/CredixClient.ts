@@ -5,6 +5,7 @@ import { ConfirmOptions, Connection, PublicKey } from "@solana/web3.js";
 import { Market } from "accounts/Market";
 import { IDL } from "idl/credix";
 import { CredixProgram } from "idl/idl.types";
+
 /** Configuration for a Credix client */
 export interface CredixClientConfig {
 	/** Program the client will be used for */

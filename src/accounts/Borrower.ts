@@ -53,7 +53,7 @@ export class BorrowerInfo {
 	 * @returns
 	 */
 	fetchDeal(dealNumber: number) {
-		return this.market.fetchDeal(this, dealNumber);
+		return this.market.fetchDeal(this.borrower, dealNumber);
 	}
 
 	/**

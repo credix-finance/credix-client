@@ -1,17 +1,17 @@
-import { CredixProgram, GlobalMarketState } from "idl/idl.types";
-import { encodeSeedString } from "utils/pda.utils";
-import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-import { BorrowerInfo } from "./Borrower";
-import { Deal } from "./Deal";
-import { asyncFilter } from "utils/async.utils";
-import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import Big from "big.js";
-import { Ratio } from "accounts/Ratio";
 import { BN, web3 } from "@project-serum/anchor";
-import { CredixPass } from "./CredixPass";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+import { Ratio } from "accounts/Ratio";
+import Big from "big.js";
 import Fraction from "fraction.js";
+import { CredixProgram, GlobalMarketState } from "idl/idl.types";
 import { CredixClient } from "index";
+import { asyncFilter } from "utils/async.utils";
 import { ZERO } from "utils/math.utils";
+import { encodeSeedString } from "utils/pda.utils";
+import { BorrowerInfo } from "./Borrower";
+import { CredixPass } from "./CredixPass";
+import { Deal } from "./Deal";
 
 /**
  * Represents a Credix market. Main entrypoint for market interactions
@@ -32,6 +32,8 @@ export class Market {
 	/**
 	 * @ignore
 	 */
+	// TODO: move towards private constructor with static load function.
+	// Right now we don't check whether the market data is from the on-chain data at address
 	constructor(
 		market: GlobalMarketState,
 		name: string,
@@ -49,10 +51,10 @@ export class Market {
 	/**
 	 * Deposit into the market's liquidity pool
 	 * @param amount Amount to deposit
-	 * @param investor Public key to deposit for. Should be the public key of the wallet of the client.
 	 * @returns
 	 */
-	async deposit(amount: Big, investor: PublicKey) {
+	async deposit(amount: Big) {
+		const investor = this.program.provider.wallet.publicKey;
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
 
 		if (!gatewayToken) {
@@ -88,10 +90,10 @@ export class Market {
 	/**
 	 * Withdraw from the market's liquidity pool
 	 * @param amount Amount to withdraw
-	 * @param investor Public key to withdraw for. Should be the public key of the wallet of the client.
 	 * @returns
 	 */
-	async withdraw(amount: Big, investor: PublicKey) {
+	async withdraw(amount: Big) {
+		const investor = this.program.provider.wallet.publicKey;
 		const gatewayToken = await this.client.getGatewayToken(investor, this.gateKeeperNetwork);
 
 		if (!gatewayToken) {
@@ -257,33 +259,32 @@ export class Market {
 	/**
 	 * Calculates the associated token account for the base mint of this market
 	 * @param pk Public key to find the associated token account for
-	 * @param offCurve Determines if the associated token account is allowed to be off curve
 	 * @returns
 	 */
-	// TODO: does this belong on Market?
-	findBaseTokenAccount(pk: PublicKey, offCurve?: boolean) {
+	// TODO: move to Mint class when available
+	findBaseTokenAccount(pk: PublicKey) {
 		return Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
 			TOKEN_PROGRAM_ID,
 			this.baseMintPK,
 			pk,
-			offCurve
+			true
 		);
 	}
 
 	/**
 	 * Calculates the associated token account for the lp mint of this market
 	 * @param pk Public key to find the associated token account for
-	 * @param offCurve Determines if the associated token account is allowed to be off curve
 	 * @returns
 	 */
-	findLPTokenAccount(pk: PublicKey, offCurve?: boolean) {
+	// TODO: move to Mint class when available
+	findLPTokenAccount(pk: PublicKey) {
 		return Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
 			TOKEN_PROGRAM_ID,
 			this.lpMintPK,
 			pk,
-			offCurve
+			true
 		);
 	}
 
@@ -346,8 +347,8 @@ export class Market {
 	 * @param dealNumber The id of the deal, scoped to the borrower
 	 * @returns
 	 */
-	async fetchDeal(borrower: BorrowerInfo, dealNumber: number) {
-		const [dealAddress] = await Deal.generatePDA(borrower.address, dealNumber, this);
+	async fetchDeal(borrower: PublicKey, dealNumber: number) {
+		const [dealAddress] = await Deal.generatePDA(borrower, dealNumber, this);
 		const programDeal = await this.program.account.deal.fetchNullable(dealAddress);
 
 		if (!programDeal) {
@@ -442,7 +443,13 @@ export class Market {
 	 */
 	async fetchCredixPass(borrower: PublicKey) {
 		const [passAddress] = await CredixPass.generatePDA(borrower, this);
-		return this.program.account.credixPass.fetchNullable(passAddress);
+		const pass = await this.program.account.credixPass.fetchNullable(passAddress);
+
+		if (!pass) {
+			return pass;
+		}
+
+		return new CredixPass(pass, passAddress);
 	}
 
 	/**
@@ -456,6 +463,7 @@ export class Market {
 		return PublicKey.findProgramAddress([seed], programId);
 	}
 
+	// TODO: add pda generation tests with static, know, reference addresses
 	private generateCredixPassPDA(pk: PublicKey) {
 		const credixSeed = encodeSeedString("credix-pass");
 		const seed = [this.address.toBuffer(), pk.toBuffer(), credixSeed];
