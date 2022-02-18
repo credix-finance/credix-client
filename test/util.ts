@@ -1,5 +1,5 @@
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import { CredixClient, CredixClientConfig } from "index";
 
 export const testProgramId = new PublicKey("CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX");
@@ -10,6 +10,6 @@ export const testCredixClientConfig: CredixClientConfig = {
 };
 export const testClient = new CredixClient(
 	testConnection,
-	NodeWallet.local(),
+	new NodeWallet(Keypair.generate()),
 	testCredixClientConfig
 );
