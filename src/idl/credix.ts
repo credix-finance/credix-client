@@ -73,14 +73,6 @@ export type Credix = {
       ],
       "args": [
         {
-          "name": "signingAuthorityBump",
-          "type": "u8"
-        },
-        {
-          "name": "globalMarketStateBump",
-          "type": "u8"
-        },
-        {
           "name": "globalMarketSeed",
           "type": "string"
         },
@@ -224,14 +216,6 @@ export type Credix = {
         }
       ],
       "args": [
-        {
-          "name": "dealBump",
-          "type": "u8"
-        },
-        {
-          "name": "borrowerInfoBump",
-          "type": "u8"
-        },
         {
           "name": "principal",
           "type": "u64"
@@ -532,10 +516,6 @@ export type Credix = {
       ],
       "args": [
         {
-          "name": "passBump",
-          "type": "u8"
-        },
-        {
           "name": "isUnderwriter",
           "type": "bool"
         },
@@ -732,11 +712,11 @@ export type Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenMintAccount",
+            "name": "baseTokenMint",
             "type": "publicKey"
           },
           {
-            "name": "lpTokenMintAccount",
+            "name": "lpTokenMint",
             "type": "publicKey"
           },
           {
@@ -1319,14 +1299,6 @@ export const IDL: Credix = {
       ],
       "args": [
         {
-          "name": "signingAuthorityBump",
-          "type": "u8"
-        },
-        {
-          "name": "globalMarketStateBump",
-          "type": "u8"
-        },
-        {
           "name": "globalMarketSeed",
           "type": "string"
         },
@@ -1470,14 +1442,6 @@ export const IDL: Credix = {
         }
       ],
       "args": [
-        {
-          "name": "dealBump",
-          "type": "u8"
-        },
-        {
-          "name": "borrowerInfoBump",
-          "type": "u8"
-        },
         {
           "name": "principal",
           "type": "u64"
@@ -1778,10 +1742,6 @@ export const IDL: Credix = {
       ],
       "args": [
         {
-          "name": "passBump",
-          "type": "u8"
-        },
-        {
           "name": "isUnderwriter",
           "type": "bool"
         },
@@ -1978,11 +1938,11 @@ export const IDL: Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenMintAccount",
+            "name": "baseTokenMint",
             "type": "publicKey"
           },
           {
-            "name": "lpTokenMintAccount",
+            "name": "lpTokenMint",
             "type": "publicKey"
           },
           {
