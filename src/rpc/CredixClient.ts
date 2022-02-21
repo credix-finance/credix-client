@@ -29,7 +29,7 @@ export class CredixClient {
 	 * If no confirm options are present the client will use the default options from the connection
 	 * @constructor
 	 */
-	constructor(connection: Connection, wallet: typeof Wallet, config: CredixClientConfig) {
+	constructor(connection: Connection, wallet: Wallet, config: CredixClientConfig) {
 		const provider = new Provider(
 			connection,
 			wallet,
