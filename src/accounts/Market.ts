@@ -508,21 +508,33 @@ export class Market {
 	 * @param borrower Enable borrower functionality (creation of deals)
 	 * @returns
 	 */
-	async issueCredixPass(pk: PublicKey, underwriter: boolean, borrower: boolean) {
-		const [credixPassAddress, credixPassBump] = await CredixPass.generatePDA(pk, this);
+	async issueCredixPass(
+		pk: PublicKey,
+		underwriter: boolean,
+		borrower: boolean,
+		releaseTimestamp: number
+	) {
+		const [credixPassAddress, credixPassAddressBump] = await CredixPass.generatePDA(pk, this);
 
-		return this.program.rpc.createCredixPass(credixPassBump, underwriter, borrower, {
-			accounts: {
-				owner: this.program.provider.wallet.publicKey,
-				passHolder: pk,
-				credixPass: credixPassAddress,
-				systemProgram: SystemProgram.programId,
-				rent: SYSVAR_RENT_PUBKEY,
-				globalMarketState: this.address,
-			},
-		});
+		return this.program.rpc.createCredixPass(
+			credixPassAddressBump,
+			underwriter,
+			borrower,
+			new BN(releaseTimestamp),
+			{
+				accounts: {
+					owner: this.program.provider.wallet.publicKey,
+					passHolder: pk,
+					credixPass: credixPassAddress,
+					systemProgram: SystemProgram.programId,
+					rent: SYSVAR_RENT_PUBKEY,
+					globalMarketState: this.address,
+				},
+			}
+		);
 	}
 
+	// TODO: move this to update functions on CredixPass
 	/**
 	 * Update a credix pass. This function requires that the client wallet to belong to a management address
 	 * @param pk Public key for which we issue a credix pass
@@ -530,16 +542,28 @@ export class Market {
 	 * @param borrower Enable borrower functionality (creation of deals)
 	 * @returns
 	 */
-	async updateCredixPass(pk: PublicKey, active: boolean, underwriter: boolean, borrower: boolean) {
+	async updateCredixPass(
+		pk: PublicKey,
+		active: boolean,
+		underwriter: boolean,
+		borrower: boolean,
+		releaseTimestamp: number
+	) {
 		const [credixPassAddress] = await CredixPass.generatePDA(pk, this);
 
-		return this.program.rpc.updateCredixPass(active, underwriter, borrower, {
-			accounts: {
-				owner: this.program.provider.wallet.publicKey,
-				passHolder: pk,
-				credixPass: credixPassAddress,
-				globalMarketState: this.address,
-			},
-		});
+		return this.program.rpc.updateCredixPass(
+			active,
+			underwriter,
+			borrower,
+			new BN(releaseTimestamp),
+			{
+				accounts: {
+					owner: this.program.provider.wallet.publicKey,
+					passHolder: pk,
+					credixPass: credixPassAddress,
+					globalMarketState: this.address,
+				},
+			}
+		);
 	}
 }
