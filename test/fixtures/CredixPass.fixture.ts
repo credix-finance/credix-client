@@ -1,4 +1,5 @@
-import { AccountInfo, PublicKey } from "@solana/web3.js";
+import { AccountInfo, Keypair, PublicKey } from "@solana/web3.js";
+import BN from "bn.js";
 import { CredixPass } from "idl/idl.types";
 import { testProgram } from "../util";
 
@@ -7,6 +8,8 @@ export const credixPassFixture: CredixPass = {
 	isBorrower: true,
 	isUnderwriter: true,
 	active: true,
+	releaseTimestamp: new BN(Date.now()),
+	user: Keypair.generate().publicKey,
 };
 
 export const programCredixPassFixture = async (

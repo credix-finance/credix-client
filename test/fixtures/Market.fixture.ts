@@ -14,6 +14,7 @@ export const globalMarketFixture: GlobalMarketState = {
 	interestFee: { numerator: 10, denominator: 100 },
 	withdrawalFee: { numerator: 5, denominator: 1000 },
 	frozen: false,
+	seed: "seed",
 };
 
 export const programMarketFixture = async (

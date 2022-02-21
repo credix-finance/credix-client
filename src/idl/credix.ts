@@ -542,6 +542,10 @@ export type Credix = {
         {
           "name": "isBorrower",
           "type": "bool"
+        },
+        {
+          "name": "releaseTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -581,6 +585,10 @@ export type Credix = {
         {
           "name": "isBorrower",
           "type": "bool"
+        },
+        {
+          "name": "releaseTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -762,6 +770,10 @@ export type Credix = {
           {
             "name": "frozen",
             "type": "bool"
+          },
+          {
+            "name": "seed",
+            "type": "string"
           }
         ]
       }
@@ -786,6 +798,14 @@ export type Credix = {
           {
             "name": "active",
             "type": "bool"
+          },
+          {
+            "name": "releaseTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "user",
+            "type": "publicKey"
           }
         ]
       }
@@ -846,6 +866,11 @@ export type Credix = {
           "name": "globalMarketState",
           "type": "publicKey",
           "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
+          "index": false
         }
       ]
     },
@@ -880,6 +905,11 @@ export type Credix = {
         {
           "name": "globalMarketState",
           "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
           "index": false
         }
       ]
@@ -921,6 +951,11 @@ export type Credix = {
           "name": "globalMarketState",
           "type": "publicKey",
           "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
+          "index": false
         }
       ]
     },
@@ -955,6 +990,11 @@ export type Credix = {
         {
           "name": "globalMarketState",
           "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
           "index": false
         }
       ]
@@ -1001,6 +1041,11 @@ export type Credix = {
           "name": "globalMarketState",
           "type": "publicKey",
           "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
+          "index": false
         }
       ]
     },
@@ -1040,6 +1085,11 @@ export type Credix = {
         {
           "name": "globalMarketState",
           "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
           "index": false
         }
       ]
@@ -1185,6 +1235,11 @@ export type Credix = {
       "code": 6027,
       "name": "InvalidTreasuryAccount",
       "msg": "Invalid treasury Account for this market."
+    },
+    {
+      "code": 6028,
+      "name": "WithdrawalsLocked",
+      "msg": "Not yet possible to withdraw funds."
     }
   ]
 };
@@ -1733,6 +1788,10 @@ export const IDL: Credix = {
         {
           "name": "isBorrower",
           "type": "bool"
+        },
+        {
+          "name": "releaseTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -1772,6 +1831,10 @@ export const IDL: Credix = {
         {
           "name": "isBorrower",
           "type": "bool"
+        },
+        {
+          "name": "releaseTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -1953,6 +2016,10 @@ export const IDL: Credix = {
           {
             "name": "frozen",
             "type": "bool"
+          },
+          {
+            "name": "seed",
+            "type": "string"
           }
         ]
       }
@@ -1977,6 +2044,14 @@ export const IDL: Credix = {
           {
             "name": "active",
             "type": "bool"
+          },
+          {
+            "name": "releaseTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "user",
+            "type": "publicKey"
           }
         ]
       }
@@ -2037,6 +2112,11 @@ export const IDL: Credix = {
           "name": "globalMarketState",
           "type": "publicKey",
           "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
+          "index": false
         }
       ]
     },
@@ -2071,6 +2151,11 @@ export const IDL: Credix = {
         {
           "name": "globalMarketState",
           "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
           "index": false
         }
       ]
@@ -2112,6 +2197,11 @@ export const IDL: Credix = {
           "name": "globalMarketState",
           "type": "publicKey",
           "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
+          "index": false
         }
       ]
     },
@@ -2146,6 +2236,11 @@ export const IDL: Credix = {
         {
           "name": "globalMarketState",
           "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
           "index": false
         }
       ]
@@ -2192,6 +2287,11 @@ export const IDL: Credix = {
           "name": "globalMarketState",
           "type": "publicKey",
           "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
+          "index": false
         }
       ]
     },
@@ -2231,6 +2331,11 @@ export const IDL: Credix = {
         {
           "name": "globalMarketState",
           "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "globalMarketStateSeed",
+          "type": "string",
           "index": false
         }
       ]
@@ -2376,6 +2481,11 @@ export const IDL: Credix = {
       "code": 6027,
       "name": "InvalidTreasuryAccount",
       "msg": "Invalid treasury Account for this market."
+    },
+    {
+      "code": 6028,
+      "name": "WithdrawalsLocked",
+      "msg": "Not yet possible to withdraw funds."
     }
   ]
 };
