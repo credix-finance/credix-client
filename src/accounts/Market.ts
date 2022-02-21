@@ -514,24 +514,18 @@ export class Market {
 		borrower: boolean,
 		releaseTimestamp: number
 	) {
-		const [credixPassAddress, credixPassAddressBump] = await CredixPass.generatePDA(pk, this);
+		const [credixPassAddress] = await CredixPass.generatePDA(pk, this);
 
-		return this.program.rpc.createCredixPass(
-			credixPassAddressBump,
-			underwriter,
-			borrower,
-			new BN(releaseTimestamp),
-			{
-				accounts: {
-					owner: this.program.provider.wallet.publicKey,
-					passHolder: pk,
-					credixPass: credixPassAddress,
-					systemProgram: SystemProgram.programId,
-					rent: SYSVAR_RENT_PUBKEY,
-					globalMarketState: this.address,
-				},
-			}
-		);
+		return this.program.rpc.createCredixPass(underwriter, borrower, new BN(releaseTimestamp), {
+			accounts: {
+				owner: this.program.provider.wallet.publicKey,
+				passHolder: pk,
+				credixPass: credixPassAddress,
+				systemProgram: SystemProgram.programId,
+				rent: SYSVAR_RENT_PUBKEY,
+				globalMarketState: this.address,
+			},
+		});
 	}
 
 	// TODO: move this to update functions on CredixPass
