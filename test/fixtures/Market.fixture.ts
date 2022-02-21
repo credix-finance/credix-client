@@ -5,8 +5,8 @@ import { testProgram } from "../util";
 
 export const globalMarketFixture: GlobalMarketState = {
 	gatekeeperNetwork: Keypair.generate().publicKey,
-	liquidityPoolTokenMintAccount: Keypair.generate().publicKey,
-	lpTokenMintAccount: Keypair.generate().publicKey,
+	baseTokenMint: Keypair.generate().publicKey,
+	lpTokenMint: Keypair.generate().publicKey,
 	treasuryPoolTokenAccount: Keypair.generate().publicKey,
 	totalOutstandingCredit: new BN(10),
 	signingAuthorityBump: 255,

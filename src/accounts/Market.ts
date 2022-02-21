@@ -198,14 +198,14 @@ export class Market {
 	 * Address of the base mint for this market. Base tokens are the currency deals are created for (e.g. USDC)
 	 */
 	get baseMintPK() {
-		return this.programVersion.liquidityPoolTokenMintAccount;
+		return this.programVersion.baseTokenMint;
 	}
 
 	/**
 	 * Address of the mint of LP token.
 	 */
 	get lpMintPK() {
-		return this.programVersion.lpTokenMintAccount;
+		return this.programVersion.lpTokenMint;
 	}
 
 	/**
