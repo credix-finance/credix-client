@@ -24,6 +24,14 @@ export class CredixPass {
 		return this.programVersion.active;
 	}
 
+	get user() {
+		return this.programVersion.user;
+	}
+
+	get releaseTimestamp() {
+		return this.programVersion.releaseTimestamp.toNumber();
+	}
+
 	static generatePDA(pk: PublicKey, market: Market) {
 		const credixPassSeed = encodeSeedString("credix-pass");
 		const seeds = [market.address.toBuffer(), pk.toBuffer(), credixPassSeed];

@@ -5,8 +5,8 @@ import { testProgram } from "../util";
 
 export const globalMarketFixture: GlobalMarketState = {
 	gatekeeperNetwork: Keypair.generate().publicKey,
-	liquidityPoolTokenMintAccount: Keypair.generate().publicKey,
-	lpTokenMintAccount: Keypair.generate().publicKey,
+	baseTokenMint: Keypair.generate().publicKey,
+	lpTokenMint: Keypair.generate().publicKey,
 	treasuryPoolTokenAccount: Keypair.generate().publicKey,
 	totalOutstandingCredit: new BN(10),
 	signingAuthorityBump: 255,
@@ -14,6 +14,7 @@ export const globalMarketFixture: GlobalMarketState = {
 	interestFee: { numerator: 10, denominator: 100 },
 	withdrawalFee: { numerator: 5, denominator: 1000 },
 	frozen: false,
+	seed: "seed",
 };
 
 export const programMarketFixture = async (

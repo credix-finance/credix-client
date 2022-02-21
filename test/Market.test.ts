@@ -83,7 +83,7 @@ describe("Market", async () => {
 		const baseMintPK = market?.baseMintPK;
 
 		// Assert
-		expect(baseMintPK?.equals(globalMarketFixture.liquidityPoolTokenMintAccount)).to.be.true;
+		expect(baseMintPK?.equals(globalMarketFixture.baseTokenMint)).to.be.true;
 	});
 
 	it("returns the lp mint public key", async () => {
@@ -99,7 +99,7 @@ describe("Market", async () => {
 		const lpMintPK = market?.lpMintPK;
 
 		// Assert
-		expect(lpMintPK?.equals(globalMarketFixture.lpTokenMintAccount)).to.be.true;
+		expect(lpMintPK?.equals(globalMarketFixture.lpTokenMint)).to.be.true;
 	});
 
 	it("returns the treasury public key", async () => {

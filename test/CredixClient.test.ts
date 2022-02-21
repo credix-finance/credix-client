@@ -62,11 +62,11 @@ describe("Credix Client", () => {
 		const marketBLPTokenMintAccount = Keypair.generate();
 		const marketAData: GlobalMarketState = {
 			...globalMarketFixture,
-			lpTokenMintAccount: marketALPTokenMintAccount.publicKey,
+			lpTokenMint: marketALPTokenMintAccount.publicKey,
 		};
 		const marketBData: GlobalMarketState = {
 			...globalMarketFixture,
-			lpTokenMintAccount: marketBLPTokenMintAccount.publicKey,
+			lpTokenMint: marketBLPTokenMintAccount.publicKey,
 		};
 		const marketAAccount = await programMarketFixture(marketAData);
 		const marketBAccount = await programMarketFixture(marketBData);
