@@ -5,9 +5,9 @@ import { chaiSolana } from "@saberhq/chai-solana";
 import { testClient, testConnection, testProgramId } from "./util";
 import { CredixClient, CredixClientConfig } from "../src/rpc/CredixClient";
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
-import { GlobalMarketState } from "idl/idl.types";
 import { Keypair } from "@solana/web3.js";
-import { Market } from "index";
+import { GlobalMarketState } from "../src/idl/idl.types";
+import { Market } from "../src";
 
 use(chaiSolana);
 

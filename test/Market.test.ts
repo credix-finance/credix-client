@@ -1,11 +1,10 @@
 import { chaiSolana } from "@saberhq/chai-solana";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Keypair } from "@solana/web3.js";
-import { Market } from "accounts/Market";
 import Big from "big.js";
 import { expect, use } from "chai";
-import { BorrowerInfo, CredixPass, Deal } from "index";
 import Sinon from "sinon";
+import { BorrowerInfo, CredixPass, Deal, Market } from "../src";
 import { borrowerInfoFixture, programBorrowerInfoFixture } from "./fixtures/BorrowerInfo.fixture";
 import { credixPassFixture, programCredixPassFixture } from "./fixtures/CredixPass.fixture";
 import { dealFixture, programDealFixture } from "./fixtures/Deal.fixture";

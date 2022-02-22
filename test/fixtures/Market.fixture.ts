@@ -1,6 +1,6 @@
 import { BN } from "@project-serum/anchor";
 import { AccountInfo, Keypair } from "@solana/web3.js";
-import { GlobalMarketState } from "idl/idl.types";
+import { GlobalMarketState } from "../../src/idl/idl.types";
 import { testProgram } from "../util";
 
 export const globalMarketFixture: GlobalMarketState = {

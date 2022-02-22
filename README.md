@@ -23,3 +23,29 @@ We use eslint and prettier to lint and format our codebase. An editorconfig file
 # Usage
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Local usage in other projects
+
+### Link
+
+#### NPM
+
+To get started:
+
+- Run `npm link` inside the client repository
+- Run `npm link @credix/credix-client` inside your other project
+
+When you are done
+
+- Run `npm unlink @credix/credix-client` inside the other project
+
+#### YARN
+
+To get started:
+
+- Run `yarn link ~/path/to/credix-client` inside the other project
+- Copy the new resolutions entry in `package.json` to the dependencies
+
+When you are done
+
+- Remove both entries

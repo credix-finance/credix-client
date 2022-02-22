@@ -1,7 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
-import { CredixPass as IDLCredixPass } from "idl/idl.types";
-import { encodeSeedString } from "utils/pda.utils";
-import { Market } from "./Market";
+import { Market } from "..";
+import { CredixPass as IDLCredixPass } from "../idl/idl.types";
+import { encodeSeedString } from "../utils/pda.utils";
 
 export class CredixPass {
 	private programVersion: IDLCredixPass;

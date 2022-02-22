@@ -1,13 +1,13 @@
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { Deal, DealStatus, Market, Ratio } from "index";
 import Sinon from "sinon";
 import { globalMarketFixture } from "./fixtures/Market.fixture";
 import { testClient, testProgram } from "./util";
 import { dealFixture } from "./fixtures/Deal.fixture";
 import { expect } from "chai";
 import { BN } from "@project-serum/anchor";
-import { encodeSeedString } from "utils/pda.utils";
 import Big from "big.js";
+import { Deal, DealStatus, Market, Ratio } from "../src";
+import { encodeSeedString } from "../src/utils/pda.utils";
 
 describe("Deal", () => {
 	const sandbox = Sinon.createSandbox();

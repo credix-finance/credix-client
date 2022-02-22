@@ -2,9 +2,9 @@ import { findGatewayToken } from "@identity.com/solana-gateway-ts";
 import { Provider, Wallet } from "@project-serum/anchor";
 import { makeSaberProvider, newProgram } from "@saberhq/anchor-contrib";
 import { ConfirmOptions, Connection, PublicKey } from "@solana/web3.js";
-import { Market } from "accounts/Market";
-import { IDL } from "idl/credix";
-import { CredixProgram } from "idl/idl.types";
+import { Market } from "..";
+import { IDL } from "../idl/credix";
+import { CredixProgram } from "../idl/idl.types";
 
 /** Configuration for a Credix client */
 export interface CredixClientConfig {

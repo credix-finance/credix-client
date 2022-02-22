@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { Ratio as IDLRatio } from "idl/idl.types";
+import { Ratio as IDLRatio } from "../idl/idl.types";
 
 export class Ratio {
 	numerator: Big;

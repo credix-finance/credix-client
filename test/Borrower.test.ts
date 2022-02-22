@@ -1,10 +1,10 @@
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { expect } from "chai";
-import { BorrowerInfo, Deal, Market } from "index";
 import Sinon from "sinon";
-import { encodeSeedString } from "utils/pda.utils";
+import { BorrowerInfo, Deal, Market } from "../src";
+import { encodeSeedString } from "../src/utils/pda.utils";
 import { borrowerInfoFixture } from "./fixtures/BorrowerInfo.fixture";
-import { programDealFixture, dealFixture } from "./fixtures/Deal.fixture";
+import { dealFixture, programDealFixture } from "./fixtures/Deal.fixture";
 import { globalMarketFixture } from "./fixtures/Market.fixture";
 import { testClient, testConnection, testProgram } from "./util";
 
