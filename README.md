@@ -22,8 +22,6 @@ We use eslint and prettier to lint and format our codebase. An editorconfig file
 
 # Usage
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Local usage in other projects
 
 ### Link
@@ -45,6 +43,7 @@ To get started:
 
 - Run `yarn link ~/path/to/credix-client` inside the other project
 - Copy the new resolutions entry in `package.json` to the dependencies
+- Run `yarn`
 
 When you are done
 
